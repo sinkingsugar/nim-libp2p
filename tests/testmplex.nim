@@ -231,6 +231,7 @@ suite "Mplex":
       var listenConn: Connection
       proc connHandler(conn: Connection) {.async, gcsafe.} =
         proc handleMplexListen(stream: Connection) {.async, gcsafe.} =
+          await sleepAsync(3000)
           let msg = await stream.readLp()
           check cast[string](msg) == &"stream {count}!"
           count.inc
@@ -255,6 +256,7 @@ suite "Mplex":
 
       await conn.close()
       await listenConn.close()
+      assert count == 10
       result = true
 
     check:
